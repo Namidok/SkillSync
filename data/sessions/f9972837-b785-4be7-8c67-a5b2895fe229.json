@@ -1,0 +1,25 @@
+[
+  {
+    "id": 1,
+    "company": "BMW",
+    "role": "Intern AI-based Memory and Context Engineering (f/m/x)",
+    "city": "Munich",
+    "tier": 1,
+    "status": "Applied",
+    "job_description": "THE BEST INTERNSHIP IN THEORY - AND IN PRACTICE.\n\nSHARE YOUR PASSION.\n\nWorld-leading technologies don\u2019t make it into a BMW until they\u2019ve undergone one of the most challenging journeys imaginable. It takes dynamic teams with outstanding technical skills to take them from the drawing board to the road. That\u2019s why our experts will treat you as part of the team from day one, encourage you to bring your own ideas to the table \u2013 and give you the opportunity to really show what you can do.\n\nOur research team at the BMW Group is dedicated to advancing intelligent mobility and shaping the future of personalized context and AI-based context engineering. Here, you will support innovative projects that redefine the customer's driving experience through large language model applications.\n\nWhat awaits you?\n\nYou will support building and optimizing the AI-based memory management system of the BMW intelligent personal assistant.\nFurthermore, you help to integrate existing models and train new machine learning models for personalized context in LLM-driven applications.\nIn addition, you contribute to leveraging user information to deliver tailored conversational experiences and recommendations.\nMoreover, you will assist in designing and implementing A2A, MCP, and agentic systems using various data sources.\n \n\nWhat should you bring along?\n\nStudies in computer science, data science, engineering or a related field.\nStrong interest in artificial intelligence, machine learning, context-aware computing, and automotive technologies.\nProficiency in Python for data processing, model integration, prototyping, and API deployment.\nHands-on experience or strong interest in AWS cloud services, including IAM Management, Bedrock, EC2, S3, and related tools.\nFamiliarity with querying languages such as SQL and GraphQL and working with heterogeneous data formats.\nExcellent communication skills and ability to thrive in a collaborative, interdisciplinary team environment.\nGood English skills.\n \n\nWould you like to support our research team in shaping the future of intelligent mobility and AI-based context engineering? Then Apply now!\n\n \n\nWhat do we offer?\n\nComprehensive mentoring & onboarding.\nPersonal & professional development.\nFlexible working hours.\nMobile work.\nAttractive & fair compensation.\nStudent apartments (subject to availability & only at the Munich location).\nAnd much more, see bmw.jobs/whatweoffer\n \n\nStart date: earliest start 01.06.2026\n\nDuration: 6 months\n\nWorking hours: Full-time\n\n \n\nYou can find helpful tips on your application and the application process here.\n\n \n\nAt the BMW Group, we place great importance on equal treatment and equal opportunities. Our recruiting decisions are based on the personality, experience, and skills of the applicants. Learn more here.",
+    "extracted_skills": [
+      "aws",
+      "ec2",
+      "graphql",
+      "llm",
+      "python",
+      "s3",
+      "sql"
+    ],
+    "cover_letter_notes": "Strong CV skills, and Matching job description ATS score",
+    "applied_date": "2026-06-11",
+    "follow_up_date": "2026-06-11",
+    "notes": "Applied",
+    "created_at": "2026-06-11T18:17:50.170768"
+  }
+]
