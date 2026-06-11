@@ -5,7 +5,12 @@ import axios from "axios"
 function getSessionId() {
   let sessionId = localStorage.getItem("skillsync_session_id")
   if (!sessionId) {
-    sessionId = crypto.randomUUID()
+    // Works on both HTTP and HTTPS
+    sessionId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+      const r = Math.random() * 16 | 0
+      const v = c === "x" ? r : (r & 0x3 | 0x8)
+      return v.toString(16)
+    })
     localStorage.setItem("skillsync_session_id", sessionId)
   }
   return sessionId
