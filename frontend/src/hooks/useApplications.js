@@ -15,6 +15,7 @@ const SESSION_ID = getSessionId()
 
 // Attach session ID to every request automatically
 axios.defaults.headers.common["x-session-id"] = SESSION_ID
+axios.defaults.baseURL = window.location.origin
 
 export default function useApplications() {
   const [applications, setApplications] = useState([])
