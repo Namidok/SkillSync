@@ -258,12 +258,6 @@ export default function AddApplication() {
           <h1 className="text-2xl font-bold text-white">Add Application</h1>
           <p className="text-subtle text-sm mt-1">Track a new role manually or bulk load your target list.</p>
         </div>
-        <button
-          onClick={() => setShowReferral(true)}
-          className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-blue-500/40 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-all"
-        >
-          🔍 Find Referral
-        </button>
       </div>
 
       {/* Form */}
@@ -376,20 +370,7 @@ export default function AddApplication() {
         </button>
       </div>
 
-      {/* Bulk load */}
-      <div className="bg-card border border-border rounded-xl p-6">
-        <p className="text-white font-medium mb-1">Bulk Load from Master Plan</p>
-        <p className="text-subtle text-sm mb-4">
-          Pre-load all {MASTER_COMPANIES.length} target companies in one click. Skips any already added.
-        </p>
-        <button
-          onClick={handleBulkLoad}
-          disabled={bulkLoading}
-          className="bg-white/5 hover:bg-white/10 border border-border text-white text-sm font-medium px-4 py-2.5 rounded-lg transition-colors disabled:opacity-50"
-        >
-          {bulkLoading ? "Loading..." : "📋 Load all target companies"}
-        </button>
-      </div>
+
 
     </div>
   )

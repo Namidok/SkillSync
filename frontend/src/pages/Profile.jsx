@@ -163,33 +163,6 @@ export default function Profile() {
             : <p className="text-white text-sm">{profile?.target_cities?.join(", ") || "—"}</p>
           }
         </div>
-
-        <div className="space-y-1.5">
-          <label className="text-xs text-muted uppercase tracking-widest">Available From</label>
-          {editing
-            ? <input
-                type="date"
-                value={form.available_date || ""}
-                onChange={e => setForm(prev => ({ ...prev, available_date: e.target.value }))}
-                className="w-full bg-surface border border-border rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-accent"
-              />
-            : <p className="text-white text-sm">{profile?.available_date || "—"}</p>
-          }
-        </div>
-
-        <div className="space-y-1.5">
-          <label className="text-xs text-muted uppercase tracking-widest">German Level</label>
-          {editing
-            ? <select
-                value={form.german_level || "A2"}
-                onChange={e => setForm(prev => ({ ...prev, german_level: e.target.value }))}
-                className="w-full bg-surface border border-border rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-accent"
-              >
-                {GERMAN_LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
-              </select>
-            : <p className="text-white text-sm">{profile?.german_level || "—"}</p>
-          }
-        </div>
       </div>
 
       {/* Social links */}

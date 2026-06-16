@@ -37,7 +37,6 @@ export default function useApplications() {
   }, [])
 
   useEffect(() => {
-    // Wait for session to be ready after OAuth redirect
     const timer = setTimeout(() => fetchAll(), 500)
     return () => clearTimeout(timer)
   }, [fetchAll])
@@ -51,6 +50,13 @@ export default function useApplications() {
   const deleteApplication = async (id) => {
     const headers = await getAuthHeader()
     await axios.delete(`/api/applications/${id}`, { headers })
+  }
+
+  const deleteAll = async (applicationsList) => {
+    const headers = await getAuthHeader()
+    await Promise.all(
+      applicationsList.map(a => axios.delete(`/api/applications/${a.id}`, { headers }))
+    )
     fetchAll()
   }
 
@@ -69,14 +75,16 @@ export default function useApplications() {
   const bulkLoad = async (companies) => {
     const headers = await getAuthHeader()
     const existing = new Set(applications.map(a => a.company))
-    for (const [company, role, city, tier] of companies) {
-      if (!existing.has(company)) {
-        await axios.post("/api/applications", {
-          company, role, city, tier,
-          job_description: "", applied_date: "",
-        }, { headers })
-      }
-    }
+    await Promise.all(
+      companies
+        .filter(([company]) => !existing.has(company))
+        .map(([company, role, city, tier]) =>
+          axios.post("/api/applications", {
+            company, role, city, tier,
+            job_description: "", applied_date: "",
+          }, { headers })
+        )
+    )
     fetchAll()
   }
 
@@ -88,6 +96,7 @@ export default function useApplications() {
     fetchAll,
     updateApplication,
     deleteApplication,
+    deleteAll,
     addApplication,
     extractSkills,
     bulkLoad,
