@@ -1,10 +1,22 @@
 from fastapi import FastAPI, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
 from utils.nlp import extract_skills
-from utils.storage import load_applications, save_applications
+from utils.storage import (
+    load_applications, save_application,
+    update_application, delete_application, get_stats
+)
+import os
+from supabase import create_client
+from dotenv import load_dotenv
+from pathlib import Path
+
+load_dotenv(Path(__file__).parent.parent / ".env")
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 app = FastAPI(title="SkillSync API")
 
@@ -16,7 +28,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Models ────────────────────────────────────────────────────────────────────
+
+def get_user_id(authorization: str = None) -> str:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    token = authorization.replace("Bearer ", "")
+    try:
+        client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+        user = client.auth.get_user(token)
+        return user.user.id
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Invalid token: {str(e)}")
+
 
 class ApplicationCreate(BaseModel):
     company: str
@@ -35,27 +58,19 @@ class ApplicationUpdate(BaseModel):
     notes: Optional[str] = None
 
 
-# ── Routes ────────────────────────────────────────────────────────────────────
+@app.get("/applications")
+def get_applications(authorization: str = Header(default=None)):
+    user_id = get_user_id(authorization)
+    return load_applications(user_id)
 
-@app.get("/applications", response_model=List[dict])
-def get_applications(x_session_id: str = Header(default="default")):
-    return load_applications(x_session_id)
 
-
-@app.post("/applications", response_model=dict)
-def create_application(
-    app_data: ApplicationCreate,
-    x_session_id: str = Header(default="default"),
-):
-    applications = load_applications(x_session_id)
-    new_id = max((a["id"] for a in applications), default=0) + 1
-
+@app.post("/applications")
+def create_application(app_data: ApplicationCreate, authorization: str = Header(default=None)):
+    user_id = get_user_id(authorization)
     extracted = []
     if app_data.job_description:
         extracted = extract_skills(app_data.job_description)
-
     new_app = {
-        "id": new_id,
         "company": app_data.company,
         "role": app_data.role,
         "city": app_data.city,
@@ -67,44 +82,29 @@ def create_application(
         "applied_date": app_data.applied_date or datetime.today().strftime("%Y-%m-%d"),
         "follow_up_date": "",
         "notes": "",
-        "created_at": datetime.now().isoformat(),
     }
-
-    applications.append(new_app)
-    save_applications(x_session_id, applications)
-    return new_app
+    result = save_application(user_id, new_app)
+    return result
 
 
-@app.patch("/applications/{app_id}", response_model=dict)
-def update_application(
+@app.patch("/applications/{app_id}")
+def update_application_endpoint(
     app_id: int,
     update: ApplicationUpdate,
-    x_session_id: str = Header(default="default"),
+    authorization: str = Header(default=None)
 ):
-    applications = load_applications(x_session_id)
-    for a in applications:
-        if a["id"] == app_id:
-            if update.status is not None:
-                a["status"] = update.status
-            if update.cover_letter_notes is not None:
-                a["cover_letter_notes"] = update.cover_letter_notes
-            if update.follow_up_date is not None:
-                a["follow_up_date"] = update.follow_up_date
-            if update.notes is not None:
-                a["notes"] = update.notes
-            save_applications(x_session_id, applications)
-            return a
-    raise HTTPException(status_code=404, detail="Application not found")
+    user_id = get_user_id(authorization)
+    updates = {k: v for k, v in update.dict().items() if v is not None}
+    result = update_application(user_id, app_id, updates)
+    if not result:
+        raise HTTPException(status_code=404, detail="Application not found")
+    return result
 
 
 @app.delete("/applications/{app_id}")
-def delete_application(
-    app_id: int,
-    x_session_id: str = Header(default="default"),
-):
-    applications = load_applications(x_session_id)
-    applications = [a for a in applications if a["id"] != app_id]
-    save_applications(x_session_id, applications)
+def delete_application_endpoint(app_id: int, authorization: str = Header(default=None)):
+    user_id = get_user_id(authorization)
+    delete_application(user_id, app_id)
     return {"message": "Deleted"}
 
 
@@ -115,21 +115,6 @@ def extract_skills_endpoint(payload: dict):
 
 
 @app.get("/stats")
-def get_stats(x_session_id: str = Header(default="default")):
-    applications = load_applications(x_session_id)
-    total = len(applications)
-    by_status = {}
-    by_tier = {}
-    for a in applications:
-        s = a.get("status", "Not Applied")
-        by_status[s] = by_status.get(s, 0) + 1
-        t = f"Tier {a.get('tier', 1)}"
-        by_tier[t] = by_tier.get(t, 0) + 1
-    return {
-        "total": total,
-        "by_status": by_status,
-        "by_tier": by_tier,
-        "callbacks": by_status.get("Callback", 0),
-        "interviews": by_status.get("Interview", 0),
-        "offers": by_status.get("Offer", 0),
-    }
+def get_stats_endpoint(authorization: str = Header(default=None)):
+    user_id = get_user_id(authorization)
+    return get_stats(user_id)

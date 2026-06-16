@@ -1,26 +1,12 @@
 import { useState, useEffect, useCallback } from "react"
 import axios from "axios"
+import { supabase } from "../lib/supabase"
 
-// Generate or retrieve a unique session ID for this browser
-function getSessionId() {
-  let sessionId = localStorage.getItem("skillsync_session_id")
-  if (!sessionId) {
-    // Works on both HTTP and HTTPS
-    sessionId = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0
-      const v = c === "x" ? r : (r & 0x3 | 0x8)
-      return v.toString(16)
-    })
-    localStorage.setItem("skillsync_session_id", sessionId)
-  }
-  return sessionId
+async function getAuthHeader() {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session?.access_token) return null
+  return { Authorization: `Bearer ${session.access_token}` }
 }
-
-const SESSION_ID = getSessionId()
-
-// Attach session ID to every request automatically
-axios.defaults.headers.common["x-session-id"] = SESSION_ID
-axios.defaults.baseURL = window.location.origin
 
 export default function useApplications() {
   const [applications, setApplications] = useState([])
@@ -31,9 +17,15 @@ export default function useApplications() {
   const fetchAll = useCallback(async () => {
     try {
       setLoading(true)
+      setError(null)
+      const headers = await getAuthHeader()
+      if (!headers) {
+        setError("Not authenticated")
+        return
+      }
       const [appsRes, statsRes] = await Promise.all([
-        axios.get("/api/applications"),
-        axios.get("/api/stats"),
+        axios.get("/api/applications", { headers }),
+        axios.get("/api/stats", { headers }),
       ])
       setApplications(appsRes.data)
       setStats(statsRes.data)
@@ -44,20 +36,27 @@ export default function useApplications() {
     }
   }, [])
 
-  useEffect(() => { fetchAll() }, [fetchAll])
+  useEffect(() => {
+    // Wait for session to be ready after OAuth redirect
+    const timer = setTimeout(() => fetchAll(), 500)
+    return () => clearTimeout(timer)
+  }, [fetchAll])
 
   const updateApplication = async (id, data) => {
-    await axios.patch(`/api/applications/${id}`, data)
+    const headers = await getAuthHeader()
+    await axios.patch(`/api/applications/${id}`, data, { headers })
     fetchAll()
   }
 
   const deleteApplication = async (id) => {
-    await axios.delete(`/api/applications/${id}`)
+    const headers = await getAuthHeader()
+    await axios.delete(`/api/applications/${id}`, { headers })
     fetchAll()
   }
 
   const addApplication = async (data) => {
-    const res = await axios.post("/api/applications", data)
+    const headers = await getAuthHeader()
+    const res = await axios.post("/api/applications", data, { headers })
     fetchAll()
     return res.data
   }
@@ -68,13 +67,14 @@ export default function useApplications() {
   }
 
   const bulkLoad = async (companies) => {
+    const headers = await getAuthHeader()
     const existing = new Set(applications.map(a => a.company))
     for (const [company, role, city, tier] of companies) {
       if (!existing.has(company)) {
         await axios.post("/api/applications", {
           company, role, city, tier,
           job_description: "", applied_date: "",
-        })
+        }, { headers })
       }
     }
     fetchAll()
@@ -91,6 +91,5 @@ export default function useApplications() {
     addApplication,
     extractSkills,
     bulkLoad,
-    sessionId: SESSION_ID,
   }
 }

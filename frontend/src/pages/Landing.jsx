@@ -61,7 +61,7 @@ export default function Landing() {
           ⚡ <span className="text-blue-400">Skill</span>Sync
         </span>
         <button
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/login")}
           className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors"
         >
           Get Started →
@@ -94,7 +94,7 @@ export default function Landing() {
 
         <div className="flex items-center justify-center gap-4 mb-20">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/login")}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-7 py-3.5 rounded-xl transition-all hover:scale-105 text-sm shadow-lg shadow-blue-500/25"
           >
             Start Tracking — it's free
@@ -193,7 +193,7 @@ export default function Landing() {
           Free forever. No account needed. Your data stays in your browser.
         </p>
         <button
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/login")}
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-10 py-4 rounded-xl transition-all hover:scale-105 shadow-lg shadow-blue-500/25"
         >
           Start Tracking →
