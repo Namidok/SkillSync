@@ -5,7 +5,7 @@ export default function Auth() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin + "/dashboard"
+        redirectTo: process.env.NODE_ENV === "production" ? "http://skillsync.srikarkodi.dev/dashboard" : window.location.origin + "/dashboard"
       }
     })
   }
