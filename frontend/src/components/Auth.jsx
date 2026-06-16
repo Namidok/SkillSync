@@ -5,7 +5,7 @@ export default function Auth() {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: "http://3.228.77.181:3000/dashboard"
+        redirectTo: window.location.origin + "/dashboard"
       }
     })
   }
