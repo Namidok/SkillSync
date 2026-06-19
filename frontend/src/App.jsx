@@ -15,7 +15,7 @@ function ProtectedLayout({ user }) {
   return (
     <div className="flex min-h-screen bg-surface">
       <Sidebar user={user} />
-      <main className="flex-1 ml-56 p-8 max-w-6xl">
+      <main className="flex-1 md:ml-56 p-8 pt-16 md:pt-8 max-w-6xl">
         <Routes>
           <Route path="/dashboard"    element={<Dashboard />}       />
           <Route path="/applications" element={<Applications />}    />
