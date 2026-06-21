@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import { useState, useEffect } from "react"
+import { Toaster } from "react-hot-toast"
 import { supabase } from "./lib/supabase"
 import Sidebar from "./components/Sidebar"
 import Auth from "./components/Auth"
@@ -18,11 +19,11 @@ function ProtectedLayout({ user }) {
       <main className="flex-1 md:ml-56 p-8 pt-16 md:pt-8 max-w-6xl">
         <Routes>
           <Route path="/dashboard"    element={<Dashboard user={user} />}          />
-          <Route path="/applications" element={<Applications />}    />
-          <Route path="/add"          element={<AddApplication />}  />
-          <Route path="/extractor"    element={<NLPExtractor />}    />
-          <Route path="/profile"      element={<Profile />}         />
-          <Route path="/*"            element={<Navigate to="/dashboard" />} />
+          <Route path="/applications" element={<Applications />}                   />
+          <Route path="/add"          element={<AddApplication />}                 />
+          <Route path="/extractor"    element={<NLPExtractor />}                   />
+          <Route path="/profile"      element={<Profile />}                        />
+          <Route path="/*"            element={<Navigate to="/dashboard" />}       />
         </Routes>
       </main>
     </div>
@@ -38,11 +39,9 @@ export default function App() {
       setUser(session?.user ?? null)
       setLoading(false)
     })
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
     })
-
     return () => subscription.unsubscribe()
   }, [])
 
@@ -53,12 +52,27 @@ export default function App() {
   )
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/"      element={<Landing />} />
-        <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Auth />} />
-        <Route path="/*"     element={<ProtectedLayout user={user} />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          style: {
+            background: "#1a1d27",
+            color: "#fff",
+            border: "1px solid #2d3748",
+            fontSize: "14px",
+          },
+          success: { iconTheme: { primary: "#68d391", secondary: "#1a1d27" } },
+          error:   { iconTheme: { primary: "#fc8181", secondary: "#1a1d27" } },
+        }}
+      />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/"      element={<Landing />} />
+          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Auth />} />
+          <Route path="/*"     element={<ProtectedLayout user={user} />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   )
 }

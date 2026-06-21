@@ -8,7 +8,7 @@ const FEATURES = [
   },
   {
     icon: "⚡",
-    title: "NLP Skill Extraction",
+    title: "Skill Scanner",
     desc: "Paste any job description and instantly see what skills are required and where your gaps are.",
   },
   {
@@ -27,7 +27,7 @@ const STEPS = [
   {
     number: "01",
     title: "Add your applications",
-    desc: "Manually add roles or bulk load a list. Paste the JD and skills are extracted automatically.",
+    desc: "Add roles one by one. Paste the job description and skills are extracted automatically.",
   },
   {
     number: "02",
@@ -41,12 +41,10 @@ const STEPS = [
   },
 ]
 
-const STACK = ["Python", "FastAPI", "React", "Tailwind CSS", "Recharts", "NLP"]
-
 const MOCK_APPS = [
-  { co: "Celonis",    role: "AI/ML Engineer",  tier: "🔥 Tier 1", status: "Callback",  color: "bg-green-500/20 text-green-300 border border-green-500/30" },
-  { co: "HelloFresh", role: "Data Engineer",   tier: "🔥 Tier 1", status: "Applied",   color: "bg-blue-500/20 text-blue-300 border border-blue-500/30" },
-  { co: "DeepL",      role: "ML Engineer",     tier: "⚡ Tier 2", status: "Interview", color: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30" },
+  { co: "Acme Corp",    role: "ML Engineer",      tier: "🔥 Tier 1", status: "Callback",  color: "bg-green-500/20 text-green-300 border border-green-500/30" },
+  { co: "Tech GmbH",   role: "Data Engineer",     tier: "🔥 Tier 1", status: "Applied",   color: "bg-blue-500/20 text-blue-300 border border-blue-500/30" },
+  { co: "StartupX",    role: "Backend Engineer",  tier: "⚡ Tier 2", status: "Interview", color: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30" },
 ]
 
 export default function Landing() {
@@ -73,26 +71,23 @@ export default function Landing() {
 
         <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold px-4 py-1.5 rounded-full mb-8 tracking-wide uppercase">
           <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-          
+          Free · No credit card required
         </div>
 
         <h1 className="text-6xl md:text-7xl font-black leading-[1.05] mb-6 tracking-tight">
           Stop guessing.
           <br />
-          <span
-            className="text-blue-400"
-            style={{ textShadow: "0 0 60px rgba(59,130,246,0.5)" }}
-          >
+          <span className="text-blue-400" style={{ textShadow: "0 0 60px rgba(59,130,246,0.5)" }}>
             Start tracking.
           </span>
         </h1>
 
         <p className="text-gray-400 text-lg max-w-lg mx-auto mb-10 leading-relaxed">
-          SkillSync is an AI-powered job tracker that extracts skills from JDs,
-          analyses your gaps, and keeps your entire pipeline organised.
+          SkillSync is an AI-powered job tracker that extracts skills from job descriptions,
+          analyses your gaps, and keeps your entire pipeline organised in one place.
         </p>
 
-        <div className="flex items-center justify-center gap-4 mb-20">
+        <div className="flex items-center justify-center gap-4 mb-20 flex-wrap">
           <button
             onClick={() => navigate("/login")}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-7 py-3.5 rounded-xl transition-all hover:scale-105 text-sm shadow-lg shadow-blue-500/25"
@@ -100,17 +95,15 @@ export default function Landing() {
             Start Tracking — it's free
           </button>
           <button
-            onClick={() => navigate("/extractor")}
+            onClick={() => navigate("/login")}
             className="border border-white/20 hover:border-white/40 text-white font-medium px-7 py-3.5 rounded-xl transition-colors text-sm"
           >
-            Try NLP Extractor
+            Try Skill Scanner
           </button>
         </div>
 
         {/* Mock dashboard */}
         <div className="bg-[#111318] border border-white/10 rounded-2xl overflow-hidden shadow-2xl shadow-black/50 max-w-2xl mx-auto text-left">
-
-          {/* Window bar */}
           <div className="flex items-center gap-2 px-5 py-3.5 border-b border-white/10 bg-white/[0.02]">
             <div className="w-3 h-3 rounded-full bg-red-500/80" />
             <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
@@ -118,9 +111,8 @@ export default function Landing() {
             <span className="text-white/30 text-xs ml-3 font-mono">skillsync · dashboard</span>
           </div>
 
-          {/* KPI row */}
           <div className="grid grid-cols-3 gap-px bg-white/5 border-b border-white/10">
-            {[["TOTAL", "37"], ["CALLBACKS", "5"], ["CALLBACK RATE", "13.5%"]].map(([label, val]) => (
+            {[["TOTAL", "24"], ["CALLBACKS", "4"], ["CALLBACK RATE", "16.7%"]].map(([label, val]) => (
               <div key={label} className="bg-[#111318] px-5 py-4">
                 <p className="text-white/40 text-xs tracking-widest mb-1">{label}</p>
                 <p className="text-white text-2xl font-bold">{val}</p>
@@ -128,7 +120,6 @@ export default function Landing() {
             ))}
           </div>
 
-          {/* App rows */}
           <div className="divide-y divide-white/5">
             {MOCK_APPS.map(({ co, role, tier, status, color }) => (
               <div key={co} className="flex items-center justify-between px-5 py-3.5 hover:bg-white/[0.02] transition-colors">
@@ -175,7 +166,7 @@ export default function Landing() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {STEPS.map(({ number, title, desc }) => (
             <div key={number}>
-              <span className="text-6xl font-black text-white-500/20 mb-3 block">{number}</span>
+              <span className="text-6xl font-black text-blue-500/20 mb-3 block">{number}</span>
               <h3 className="text-white font-bold mb-2">{title}</h3>
               <p className="text-white/40 text-sm leading-relaxed">{desc}</p>
             </div>
@@ -183,14 +174,13 @@ export default function Landing() {
         </div>
       </section>
 
-
       {/* CTA */}
       <section className="max-w-6xl mx-auto px-8 py-24 border-t border-white/10 text-center">
         <h2 className="text-4xl font-black text-white mb-4 tracking-tight">
           Ready to take control?
         </h2>
         <p className="text-white/40 text-sm mb-8 max-w-sm mx-auto">
-          Free forever. No account needed. Your data stays in your browser.
+          Sign in with Google and start tracking in under 60 seconds.
         </p>
         <button
           onClick={() => navigate("/login")}
@@ -205,6 +195,7 @@ export default function Landing() {
         <span className="text-white/60 font-bold text-sm">
           ⚡ <span className="text-blue-400">Skill</span>Sync
         </span>
+        <span className="text-white/20 text-xs">Built with React · FastAPI · AWS</span>
       </footer>
 
     </div>

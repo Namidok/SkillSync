@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import axios from "axios"
 import { supabase } from "../lib/supabase"
+import toast from "react-hot-toast"
 
 async function getAuthHeader() {
   // Refresh session if needed
@@ -51,11 +52,13 @@ export default function useApplications() {
     const headers = await getAuthHeader()
     await axios.patch(`/api/applications/${id}`, data, { headers })
     fetchAll()
+    toast.success("Application updated")
   }
 
   const deleteApplication = async (id) => {
     const headers = await getAuthHeader()
     await axios.delete(`/api/applications/${id}`, { headers })
+    toast.success("Application deleted")
   }
 
   const deleteAll = async (applicationsList) => {
@@ -64,12 +67,14 @@ export default function useApplications() {
       applicationsList.map(a => axios.delete(`/api/applications/${a.id}`, { headers }))
     )
     fetchAll()
+    toast.success("All applications deleted")
   }
 
   const addApplication = async (data) => {
     const headers = await getAuthHeader()
     const res = await axios.post("/api/applications", data, { headers })
     fetchAll()
+    toast.success(`Added ${data.company}`)
     return res.data
   }
 
