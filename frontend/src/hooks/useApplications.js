@@ -3,8 +3,14 @@ import axios from "axios"
 import { supabase } from "../lib/supabase"
 
 async function getAuthHeader() {
-  const { data: { session } } = await supabase.auth.getSession()
-  if (!session?.access_token) return null
+  // Refresh session if needed
+  const { data: { session }, error } = await supabase.auth.getSession()
+  if (error || !session) {
+    await supabase.auth.refreshSession()
+    const { data: { session: refreshed } } = await supabase.auth.getSession()
+    if (!refreshed?.access_token) return null
+    return { Authorization: `Bearer ${refreshed.access_token}` }
+  }
   return { Authorization: `Bearer ${session.access_token}` }
 }
 
