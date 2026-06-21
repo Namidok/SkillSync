@@ -7,7 +7,7 @@ const links = [
   { to: "/dashboard",    icon: LayoutDashboard,   label: "Dashboard"       },
   { to: "/applications", icon: BriefcaseBusiness, label: "Applications"    },
   { to: "/add",          icon: PlusCircle,         label: "Add Application" },
-  { to: "/extractor",    icon: Sparkles,           label: "NLP Extractor"   },
+  { to: "/extractor",    icon: Sparkles,           label: "Skill Scanner"   },
   { to: "/profile",      icon: User,               label: "Profile"         },
 ]
 

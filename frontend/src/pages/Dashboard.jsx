@@ -6,6 +6,7 @@ import {
 import StatCard from "../components/StatCard"
 import StatusBadge from "../components/StatusBadge"
 import useApplications from "../hooks/useApplications"
+import EmptyDashboard from "../components/EmptyDashboard"
 
 const STATUS_COLORS = {
   "Not Applied": "#4a5568",
@@ -18,7 +19,7 @@ const STATUS_COLORS = {
 
 const TIER_COLORS = ["#3B82F6", "#68d391", "#f6ad55", "#fc8181"]
 
-export default function Dashboard() {
+export default function Dashboard({ user }) {
   const { applications, stats, loading, error } = useApplications()
 
   const statusData = useMemo(() => {
@@ -63,6 +64,8 @@ export default function Dashboard() {
 
   const total     = stats.total || 0
   const callbacks = stats.callbacks || 0
+
+  if (total === 0) return <EmptyDashboard user={user} />
 
   return (
     <div className="space-y-8">

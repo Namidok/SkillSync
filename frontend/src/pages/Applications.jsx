@@ -3,6 +3,7 @@ import { Search, ExternalLink, Trash2 } from "lucide-react"
 import StatusBadge from "../components/StatusBadge"
 import SkillTag from "../components/SkillTag"
 import useApplications from "../hooks/useApplications"
+import EmptyApplications from "../components/EmptyApplications"
 
 const STATUS_OPTIONS = ["Not Applied", "Applied", "Callback", "Interview", "Offer", "Rejected"]
 const TIER_LABELS = { 1: "🔥 Tier 1", 2: "⚡ Tier 2", 3: "🎯 Tier 3", 4: "🎲 Tier 4" }
@@ -81,6 +82,18 @@ export default function Applications() {
     const q = encodeURIComponent(`${company} ${role} site:linkedin.com`)
     window.open(`https://www.google.com/search?q=${q}`, "_blank")
   }
+
+  if (!loading && applications.length === 0) return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-white">Applications</h1>
+        <p className="text-subtle text-sm mt-1">Track every company you apply to</p>
+      </div>
+      <div className="bg-card border border-border rounded-xl">
+        <EmptyApplications />
+      </div>
+    </div>
+  )
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">

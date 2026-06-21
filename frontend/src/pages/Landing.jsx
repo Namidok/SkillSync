@@ -26,7 +26,7 @@ const FEATURES = [
 const STEPS = [
   {
     number: "01",
-    title: "Add your target companies",
+    title: "Add your applications",
     desc: "Manually add roles or bulk load a list. Paste the JD and skills are extracted automatically.",
   },
   {
@@ -73,7 +73,7 @@ export default function Landing() {
 
         <div className="inline-flex items-center gap-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold px-4 py-1.5 rounded-full mb-8 tracking-wide uppercase">
           <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
-          Built for AI/ML job seekers
+          
         </div>
 
         <h1 className="text-6xl md:text-7xl font-black leading-[1.05] mb-6 tracking-tight">

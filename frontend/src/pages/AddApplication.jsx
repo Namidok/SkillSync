@@ -5,48 +5,6 @@ import useApplications from "../hooks/useApplications"
 
 const TIER_LABELS = { 1: "🔥 Tier 1", 2: "⚡ Tier 2", 3: "🎯 Tier 3", 4: "🎲 Tier 4" }
 
-const MASTER_COMPANIES = [
-  ["Celonis",           "AI/ML Engineer",        "Munich",    1],
-  ["HelloFresh",        "Data/ML Engineer",       "Berlin",    1],
-  ["Delivery Hero",     "Data Engineer",          "Berlin",    1],
-  ["SAP",               "AI Developer Intern",    "Munich",    1],
-  ["N26",               "ML Engineer",            "Berlin",    1],
-  ["Zalando",           "ML/Data Engineer",       "Berlin",    1],
-  ["AUTO1 Group",       "Data Engineer",          "Berlin",    1],
-  ["Siemens",           "AI/Data Engineer",       "Munich",    1],
-  ["GetYourGuide",      "ML/Backend Eng",         "Berlin",    2],
-  ["FlixBus",           "Data Engineer",          "Munich",    2],
-  ["Personio",          "ML/Data Engineer",       "Munich",    2],
-  ["Contentful",        "AI/Backend Eng",         "Berlin",    2],
-  ["Trade Republic",    "Data Engineer",          "Berlin",    2],
-  ["Miro",              "ML/Data Engineer",       "Berlin",    2],
-  ["Enpal",             "Data/ML Engineer",       "Berlin",    2],
-  ["BMW Group",         "Data/AI Engineer",       "Munich",    2],
-  ["Bosch",             "AI/ML Engineer",         "Stuttgart", 2],
-  ["DeepL",             "ML Engineer",            "Cologne",   2],
-  ["Databricks",        "Data Engineer",          "Berlin",    2],
-  ["Snowflake",         "Data Engineer",          "Munich",    2],
-  ["Amazon Germany",    "Data Engineer Intern",   "Berlin",    2],
-  ["Hawk AI",           "ML Engineer",            "Munich",    3],
-  ["Scout24",           "Data/ML Engineer",       "Berlin",    3],
-  ["Axel Springer",     "AI/Data Engineer",       "Berlin",    3],
-  ["Tesla Germany",     "Data Engineer",          "Berlin",    3],
-  ["Fraunhofer IIS",    "AI Research Intern",     "Erlangen",  3],
-  ["Lufthansa Technik", "Data/AI Intern",         "Hamburg",   3],
-  ["Volkswagen Group",  "Data/ML Engineer",       "Wolfsburg", 3],
-  ["Porsche",           "Software/AI Intern",     "Stuttgart", 3],
-  ["Airbus",            "AI/Data Engineer",       "Hamburg",   3],
-  ["Google Germany",    "ML Engineer Intern",     "Munich",    4],
-  ["Microsoft Germany", "AI Engineer Intern",     "Munich",    4],
-  ["NVIDIA Germany",    "ML Engineer Intern",     "Munich",    4],
-  ["Spotify Germany",   "ML Engineer Intern",     "Berlin",    4],
-  ["Klarna Germany",    "ML/Data Intern",         "Berlin",    4],
-  ["Salesforce DE",     "AI Engineer Intern",     "Munich",    4],
-  ["Stripe Germany",    "Data Engineer Intern",   "Berlin",    4],
-]
-
-// ── Referral Modal ─────────────────────────────────────────────────────────
-
 function ReferralModal({ onClose }) {
   const [url,     setUrl]     = useState("")
   const [company, setCompany] = useState("")
@@ -54,9 +12,7 @@ function ReferralModal({ onClose }) {
 
   const extractFromUrl = (inputUrl) => {
     try {
-      const domain = new URL(inputUrl).hostname
-        .replace("www.", "")
-        .split(".")[0]
+      const domain = new URL(inputUrl).hostname.replace("www.", "").split(".")[0]
       setCompany(domain.charAt(0).toUpperCase() + domain.slice(1))
     } catch {
       setCompany("")
@@ -110,8 +66,6 @@ function ReferralModal({ onClose }) {
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-[#111318] border border-white/10 rounded-2xl w-full max-w-md shadow-2xl">
-
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
           <div>
             <h2 className="text-white font-bold text-lg">Find Referral</h2>
@@ -121,21 +75,17 @@ function ReferralModal({ onClose }) {
             <X size={18} />
           </button>
         </div>
-
-        {/* Body */}
         <div className="px-6 py-5 space-y-4">
-
           <div className="space-y-1.5">
             <label className="text-xs text-white/30 uppercase tracking-widest">Job Posting URL</label>
             <input
               type="url"
               value={url}
               onChange={handleUrlChange}
-              placeholder="https://celonis.com/careers/job-123"
+              placeholder="https://company.com/careers/job-123"
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-blue-500/50 transition-colors"
             />
           </div>
-
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label className="text-xs text-white/30 uppercase tracking-widest">Company</label>
@@ -158,7 +108,6 @@ function ReferralModal({ onClose }) {
               />
             </div>
           </div>
-
           <div className="space-y-2 pt-1">
             <p className="text-xs text-white/30 uppercase tracking-widest">Open searches</p>
             {searches.map(({ label, desc, icon, color, action }) => (
@@ -179,7 +128,6 @@ function ReferralModal({ onClose }) {
               </button>
             ))}
           </div>
-
           <button
             onClick={handleFindAll}
             disabled={!company}
@@ -188,18 +136,14 @@ function ReferralModal({ onClose }) {
             <Search size={14} className="inline mr-2" />
             Open All 3 Searches
           </button>
-
         </div>
       </div>
     </div>
   )
 }
 
-
-// ── Main Page ──────────────────────────────────────────────────────────────
-
 export default function AddApplication() {
-  const { addApplication, bulkLoad } = useApplications()
+  const { addApplication } = useApplications()
 
   const [form, setForm] = useState({
     company: "", role: "", city: "",
@@ -209,7 +153,6 @@ export default function AddApplication() {
   })
   const [extractedSkills, setExtractedSkills] = useState([])
   const [submitting,      setSubmitting]      = useState(false)
-  const [bulkLoading,     setBulkLoading]     = useState(false)
   const [success,         setSuccess]         = useState("")
   const [error,           setError]           = useState("")
   const [showReferral,    setShowReferral]    = useState(false)
@@ -240,29 +183,26 @@ export default function AddApplication() {
     }
   }
 
-  const handleBulkLoad = async () => {
-    setBulkLoading(true)
-    await bulkLoad(MASTER_COMPANIES)
-    setBulkLoading(false)
-    setSuccess(`✅ Target companies loaded.`)
-  }
-
   return (
     <div className="space-y-8 max-w-3xl">
 
       {showReferral && <ReferralModal onClose={() => setShowReferral(false)} />}
 
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">Add Application</h1>
-          <p className="text-subtle text-sm mt-1">Track a new role manually or bulk load your target list.</p>
+          <p className="text-subtle text-sm mt-1">Track a new job application.</p>
         </div>
+        <button
+          onClick={() => setShowReferral(true)}
+          className="flex items-center gap-2 border border-border text-subtle hover:text-white hover:border-accent/40 px-4 py-2 rounded-lg text-sm transition-all"
+        >
+          <Search size={14} />
+          Find Referral
+        </button>
       </div>
 
-      {/* Form */}
       <div className="bg-card border border-border rounded-xl p-6 space-y-5">
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label className="text-xs text-muted uppercase tracking-widest">Company *</label>
@@ -274,7 +214,6 @@ export default function AddApplication() {
               className="w-full bg-surface border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder-muted focus:outline-none focus:border-accent transition-colors"
             />
           </div>
-
           <div className="space-y-1.5">
             <label className="text-xs text-muted uppercase tracking-widest">Role *</label>
             <input
@@ -285,7 +224,6 @@ export default function AddApplication() {
               className="w-full bg-surface border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder-muted focus:outline-none focus:border-accent transition-colors"
             />
           </div>
-
           <div className="space-y-1.5">
             <label className="text-xs text-muted uppercase tracking-widest">City</label>
             <input
@@ -296,7 +234,6 @@ export default function AddApplication() {
               className="w-full bg-surface border border-border rounded-lg px-3 py-2.5 text-sm text-white placeholder-muted focus:outline-none focus:border-accent transition-colors"
             />
           </div>
-
           <div className="space-y-1.5">
             <label className="text-xs text-muted uppercase tracking-widest">Tier</label>
             <select
@@ -304,12 +241,9 @@ export default function AddApplication() {
               onChange={e => set("tier", Number(e.target.value))}
               className="w-full bg-surface border border-border rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-accent"
             >
-              {[1,2,3,4].map(t => (
-                <option key={t} value={t}>{TIER_LABELS[t]}</option>
-              ))}
+              {[1,2,3,4].map(t => <option key={t} value={t}>{TIER_LABELS[t]}</option>)}
             </select>
           </div>
-
           <div className="space-y-1.5">
             <label className="text-xs text-muted uppercase tracking-widest">Applied Date</label>
             <input
@@ -369,9 +303,6 @@ export default function AddApplication() {
           {submitting ? "Adding..." : "＋ Add Application"}
         </button>
       </div>
-
-
-
     </div>
   )
 }

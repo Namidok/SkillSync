@@ -17,7 +17,7 @@ function ProtectedLayout({ user }) {
       <Sidebar user={user} />
       <main className="flex-1 md:ml-56 p-8 pt-16 md:pt-8 max-w-6xl">
         <Routes>
-          <Route path="/dashboard"    element={<Dashboard />}       />
+          <Route path="/dashboard"    element={<Dashboard user={user} />}          />
           <Route path="/applications" element={<Applications />}    />
           <Route path="/add"          element={<AddApplication />}  />
           <Route path="/extractor"    element={<NLPExtractor />}    />
