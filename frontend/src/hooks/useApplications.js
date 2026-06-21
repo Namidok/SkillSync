@@ -37,7 +37,11 @@ export default function useApplications() {
       setApplications(appsRes.data)
       setStats(statsRes.data)
     } catch (err) {
-      setError("Cannot reach API — is FastAPI running on port 8000?")
+      if (err?.response?.status === 401) {
+        await supabase.auth.signOut()
+      } else {
+        setError("Cannot reach API — is FastAPI running on port 8000?")
+      }
     } finally {
       setLoading(false)
     }
