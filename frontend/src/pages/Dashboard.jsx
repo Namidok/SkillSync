@@ -17,7 +17,7 @@ const STATUS_COLORS = {
   "Rejected":    "#fc8181",
 }
 
-const TIER_COLORS = ["#3B82F6", "#68d391", "#f6ad55", "#fc8181"]
+const APPLIED_REJECTED_COLORS = ["#3B82F6", "#fc8181"]
 
 export default function Dashboard({ user }) {
   const { applications, stats, loading, error } = useApplications()
@@ -31,23 +31,21 @@ export default function Dashboard({ user }) {
     return Object.entries(counts).map(([name, value]) => ({ name, value }))
   }, [applications])
 
-  const tierData = useMemo(() => {
-    const counts = {}
-    applications.forEach(a => {
-      const t = `Tier ${a.tier}`
-      counts[t] = (counts[t] || 0) + 1
-    })
-    return Object.entries(counts).map(([name, value]) => ({ name, value }))
+  const appliedRejectedData = useMemo(() => {
+    const appliedCount = applications.filter(a => a.status && a.status !== "Not Applied" && a.status !== "Rejected").length
+    const rejectedCount = applications.filter(a => a.status === "Rejected").length
+    return [
+      { name: "Applied", value: appliedCount },
+      { name: "Rejected", value: rejectedCount },
+    ].filter(d => d.value > 0)
   }, [applications])
 
   const followUps = useMemo(() => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
     return applications.filter(a => {
       if (!a.follow_up_date) return false
       if (["Offer", "Rejected"].includes(a.status)) return false
-      return new Date(a.follow_up_date) <= today
-    })
+      return true
+    }).sort((a, b) => new Date(a.follow_up_date) - new Date(b.follow_up_date))
   }, [applications])
 
   if (loading) return (
@@ -128,23 +126,23 @@ export default function Dashboard({ user }) {
           )}
         </div>
 
-        {/* Pie chart */}
+        {/* Applied vs Rejected pie chart */}
         <div className="bg-card border border-border rounded-xl p-5">
           <p className="text-xs text-muted uppercase tracking-widest mb-4">
-            Pipeline by Tier
+            Applied vs Rejected
           </p>
-          {tierData.length > 0 ? (
+          {appliedRejectedData.length > 0 ? (
             <ResponsiveContainer width="100%" height={220}>
               <PieChart>
                 <Pie
-                  data={tierData}
+                  data={appliedRejectedData}
                   cx="50%" cy="50%"
                   innerRadius={60} outerRadius={90}
                   dataKey="value"
                   paddingAngle={3}
                 >
-                  {tierData.map((_, i) => (
-                    <Cell key={i} fill={TIER_COLORS[i % TIER_COLORS.length]} />
+                  {appliedRejectedData.map((_, i) => (
+                    <Cell key={i} fill={APPLIED_REJECTED_COLORS[i % APPLIED_REJECTED_COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip
@@ -173,24 +171,31 @@ export default function Dashboard({ user }) {
             Follow-up Alerts
           </p>
           <div className="space-y-2">
-            {followUps.map(a => (
-              <div
-                key={a.id}
-                className="flex items-center justify-between bg-yellow-900/10 border border-yellow-800/30 rounded-lg px-4 py-3"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-yellow-400 text-sm">⚠</span>
-                  <div>
-                    <p className="text-white text-sm font-medium">{a.company}</p>
-                    <p className="text-muted text-xs">{a.role} · {a.city}</p>
+            {followUps.map(a => {
+              const isOverdue = new Date(a.follow_up_date) < new Date(new Date().toDateString())
+              return (
+                <div
+                  key={a.id}
+                  className={`flex items-center justify-between rounded-lg px-4 py-3 border ${
+                    isOverdue ? "bg-red-900/10 border-red-800/30" : "bg-yellow-900/10 border-yellow-800/30"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className={isOverdue ? "text-red-400 text-sm" : "text-yellow-400 text-sm"}>⚠</span>
+                    <div>
+                      <p className="text-white text-sm font-medium">{a.company}</p>
+                      <p className="text-muted text-xs">{a.role} · {a.city}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <StatusBadge status={a.status} />
+                    <span className={isOverdue ? "text-red-300 text-xs" : "text-yellow-300 text-xs"}>
+                      {isOverdue ? "Overdue" : "Due"} {a.follow_up_date}
+                    </span>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <StatusBadge status={a.status} />
-                  <span className="text-yellow-300 text-xs">Due {a.follow_up_date}</span>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}

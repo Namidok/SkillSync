@@ -45,7 +45,7 @@ class ApplicationCreate(BaseModel):
     company: str
     role: str
     city: str
-    tier: int
+    tier: int = 1
     job_description: Optional[str] = ""
     cover_letter_notes: Optional[str] = ""
     applied_date: Optional[str] = ""

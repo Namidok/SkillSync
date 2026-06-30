@@ -1,7 +1,7 @@
 # SkillSync — AI Job Application Tracker
 ### skillsync.srikarkodi.dev
 
-> A production-grade job application tracker with NLP skill extraction, pipeline analytics, Google OAuth, and PostgreSQL. Built for real job searches — currently tracking 50+ applications across Germany.
+> A production-grade job application tracker with NLP skill extraction, pipeline analytics, Google OAuth, and PostgreSQL.
 
 ---
 
